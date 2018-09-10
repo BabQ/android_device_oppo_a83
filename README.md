@@ -1,4 +1,4 @@
-OPPO A83 TWRP3.2.3 Device Tree[Omnirom 7.1]
+OPPO A83/A1 TWRP3.2.3 Device Tree[Omnirom 7.1]
 
 ![OPPO A83](https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1181387776,822790841&fm=26&gp=0.jpg "OPPO A83")
 

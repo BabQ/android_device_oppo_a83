@@ -1,0 +1,70 @@
+# blestech
+
+# device.te
+#type bl229x_device, dev_type;
+
+# file_context.te
+#/dev/bl229x(/.*)? u:object_r:bl229x_device:s0
+
+# app.te
+#allow appdomain bl229x_device:chr_file rw_file_perms;
+
+# system_app.te
+#allow system_app bl229x_device:chr_file rw_file_perms;
+#allow system_app input_device:dir search;
+#allow system_app fingerprint_prop:property_service set;
+
+# system_server.te
+#allow system_server  bl229x_device:chr_file rw_file_perms;
+
+
+# fingerprint.te
+# Policy File of /:system/bin/fingerprintd Excutable File
+# type fingerprintd, domain;
+# type fingerprintd_exec, exec_type, file_type;
+
+binder_use(fingerprintd)
+binder_call(fingerprintd, binderservicedomain)
+binder_call(fingerprintd, appdomain)
+binder_service(fingerprintd)
+
+# need to find KeyStore and add self
+allow fingerprintd fingerprintd_service:service_manager { add find };
+
+# allow HAL module to read dir contents
+allow fingerprintd fingerprintd_data_file:file { create_file_perms };
+
+# allow HAL module to read/write/unlink contents of this dir
+allow fingerprintd fingerprintd_data_file:dir rw_dir_perms;
+
+# Need to add auth tokens to KeyStore
+use_keystore(fingerprintd)
+allow fingerprintd keystore:keystore_key { add_auth };
+
+# For permissions checking
+binder_call(fingerprintd, system_server);
+allow fingerprintd permission_service:service_manager find;
+allow fingerprintd default_android_service:service_manager find;
+allow fingerprintd fingerprintd:capability { dac_override dac_read_search };
+allow fingerprintd bl229x_device:chr_file rw_file_perms;
+allow fingerprintd input_device:dir search;
+allow fingerprintd input_device:chr_file rw_file_perms;
+
+
+# For pipe file  
+allow fingerprintd fingerprintd_data_file:fifo_file { create open read write };
+
+# property_contexts.te
+#persist.blestech.nav	u:object_r:fingerprint_prop:s0
+
+#for tee
+#allow fingerprintd teei_fp_device:chr_file { read write open ioctl };
+#allow fingerprintd teei_fp_device:chr_file rw_file_perms;
+allow fingerprintd self:netlink_socket { read bind create write getattr setopt };
+
+type blestech_fp_device, dev_type;
+allow appdomain blestech_fp_device:chr_file rw_file_perms;
+allow system_app blestech_fp_device:chr_file rw_file_perms;
+allow fingerprintd blestech_fp_device:chr_file rw_file_perms;
+allow system_server  blestech_fp_device:chr_file rw_file_perms;
+allow system_app blestech_fp_device:chr_file rw_file_perms;

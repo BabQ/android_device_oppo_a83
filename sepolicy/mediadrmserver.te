@@ -1,0 +1,19 @@
+# ==============================================
+# MTK Policy Rule
+# ==============================================
+
+# Date : WK16.33
+# Purpose: Allow to access ged for gralloc_extra functions
+allow mediadrmserver proc_ged:file {open read write ioctl getattr};
+
+# ==============================================
+# MTK Policy Rule
+# ==============================================
+
+# Date : WK17.06
+# Purpose: Allow to access proc file
+allow mediadrmserver proc:file getattr;
+
+# Date : WK17.09
+# Purpose: Allow to access link file
+allow mediadrmserver rootfs:lnk_file getattr;

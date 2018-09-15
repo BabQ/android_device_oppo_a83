@@ -1,0 +1,13 @@
+allow fingerprintd bl229x_device:chr_file { open read write ioctl };
+allow ma_data_file labeledfs:filesystem associate;
+file_type_auto_trans(fingerprintd, system_data_file, ma_data_file);
+allow fingerprintd ma_data_file:file create_file_perms;
+allow fingerprintd ma_data_file:dir {read write remove_name open};
+allow fingerprintd mafinger_device:chr_file {open write read ioctl};
+allow fingerprintd property_socket:sock_file write;
+allow fingerprintd init:unix_stream_socket connectto;
+
+allow fingerprintd sunwave_device:chr_file { open read write ioctl };
+
+allow fingerprintd self:netlink_kobject_uevent_socket { create setopt bind read };
+

@@ -1,0 +1,5 @@
+
+allow wpa init:unix_dgram_socket sendto;
+
+#allow ccci_mdinit volte_prop:property_service set;
+

@@ -1,0 +1,10 @@
+# ==============================================
+# MTK Policy Rule
+# ============
+allow logd logd_prop:property_service set;
+#allow logd logmuch_prop:property_service set;
+allow logd log_tag_prop:property_service set;
+#neverallow {domain -init -logd -radio -mtkrild -cameraserver -system_server eng('-mtkimsmddomain')} logmuch_prop:property_service set;
+
+# purpose: allow logd to access aee socket
+allow logd debuggerd_socket:unix_stream_socket connectto;

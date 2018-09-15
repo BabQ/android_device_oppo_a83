@@ -1,0 +1,5 @@
+on init
+	export LD_PRELOAD libudf.so:libdirect-coredump.so
+
+on post-fs-data
+    mkdir /data/misc/aee_interim 0777 system system

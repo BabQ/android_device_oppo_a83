@@ -1,0 +1,131 @@
+type tkcore, domain, domain_deprecated;
+# teed
+type tkcore_exec, exec_type, file_type;
+# /data/tee(/.*)?
+type tkcore_data_file, file_type, data_file_type;
+# /dev/tkcoredrv
+type tkcore_admin_device, dev_type;
+# /data/teec.log
+type tkcore_log_file, file_type, data_file_type;
+# /system/app/t6(/.*)?
+type tkcore_systa_dir, file_type;
+# /data/tee/t6(/.*)?
+type tkcore_spta_dir, file_type, data_file_type;
+
+type tkcore_block_device, dev_type;
+
+# this domain will be attached to teed in init.trustkernel.rc
+init_daemon_domain(tkcore)
+
+allow tkcore tkcore_admin_device:chr_file rw_file_perms;
+allow tkcore tkcore_data_file:dir rw_dir_perms;
+allow tkcore tkcore_data_file:dir create_file_perms;
+allow tkcore tkcore_data_file:dir rmdir;
+allow tkcore tkcore_data_file:file rw_file_perms;
+allow tkcore tkcore_data_file:file { create link unlink };
+allow tkcore tkcore_log_file:file create_file_perms;
+
+allow tkcore tkcore_systa_dir:dir rw_dir_perms;
+allow tkcore tkcore_systa_dir:dir create_file_perms;
+allow tkcore tkcore_systa_dir:dir rmdir;
+allow tkcore tkcore_systa_dir:file rw_file_perms;
+allow tkcore tkcore_systa_dir:file { create link unlink };
+allow tkcore tkcore_systa_dir:file create_file_perms;
+
+allow tkcore tkcore_spta_dir:dir rw_dir_perms;
+allow tkcore tkcore_spta_dir:dir create_file_perms;
+allow tkcore tkcore_spta_dir:dir rmdir;
+allow tkcore tkcore_spta_dir:file rw_file_perms;
+allow tkcore tkcore_spta_dir:file { create link unlink };
+allow tkcore tkcore_spta_dir:file create_file_perms;
+
+allow system_app tkcore_admin_device:chr_file rw_file_perms;
+
+allow fingerprintd tkcore_log_file:file { open append getattr };
+allow fingerprintd tkcore_admin_device:chr_file rw_file_perms;
+
+allow system_app fingerprintd:unix_stream_socket { connectto read write };
+allow system_app fingerprintd:fd { use };
+# allow fingerprint_service added into service_manager
+allow system_app fingerprint_service:service_manager { add };
+
+allow keystore tkcore_admin_device:chr_file rw_file_perms;
+allow keystore tkcore_log_file:file { open append getattr};
+
+allow gatekeeperd tkcore_admin_device:chr_file rw_file_perms;
+allow gatekeeperd tkcore_log_file:file { open append getattr};
+
+allow vold tkcore_admin_device:chr_file rw_file_perms;
+allow vold tkcore_log_file:file { open append getattr };
+
+# define tkcore_admin_device as a trustedobject for mlsconstrain, otherwise untrusted_app could not access tkcore_admin_device
+# refer to external/sepolicy/mls for the detail MLS constrain
+typeattribute tkcore_admin_device mlstrustedobject;
+typeattribute tkcore_spta_dir mlstrustedobject;
+typeattribute tkcore_data_file mlstrustedobject;
+
+allow shell tkcore_data_file:dir { search getattr };
+allow shell tkcore_data_file:file { getattr };
+
+allow shell tkcore_spta_dir:dir { search open read getattr };
+allow shell tkcore_spta_dir:file rw_file_perms;
+allow shell tkcore_spta_dir:file { create unlink getattr};
+
+allow shell tkcore_log_file:file { open read getattr };
+
+# Purpose : TUI service need to access tui device
+# Package: com.trustkernel.tuiservice
+allow platform_app graphics_device:dir search;
+allow platform_app graphics_device:chr_file rw_file_perms;
+allow platform_app tkcore_admin_device:chr_file rw_file_perms;
+
+allow tkcore_exec  tkcore_exec:unix_stream_socket {connectto read write };
+allow tkcore  tkcore:unix_stream_socket {connectto read write };
+# allow teed write /data/tee/t6/
+allow tkcore_exec  tkcore_spta_dir:dir rw_file_perms;
+# allow teed write /system/app/t6/
+allow tkcore_exec tkcore_systa_dir:dir rw_file_perms;
+#allow tkcore system_file:sock_file { write };
+#allow untrusted_app tkcore_admin_device:chr_file { ioctl open read write };
+# all meta test progess read TEE.
+allow meta_tst tkcore_log_file:file { open append getattr };
+allow meta_tst tkcore_admin_device:chr_file rw_file_perms;
+allow meta_tst tkcore_systa_dir:dir { search };
+allow meta_tst tkcore_systa_dir:file { open getattr read };
+allow meta_tst tkcore_admin_device:chr_file rw_file_perms;
+allow meta_tst toolbox_exec:file { execute getattr read open execute_no_trans };
+allow meta_tst media_rw_data_file:dir { search };
+allow meta_tst media_rw_data_file:file { read write open };
+allow radio  tkcore_admin_device:chr_file  { open read write };
+
+
+allow tkcore tkcore:udp_socket { create connect read write setopt getopt getattr bind };
+allow tkcore tkcore:tcp_socket { create connect read write setopt getopt getattr bind };
+allow tkcore fwmarkd_socket:sock_file { write };
+allow tkcore port:tcp_socket { name_connect };
+allow tkcore port:udp_socket { name_bind };
+allow tkcore netd:unix_stream_socket { connectto read write };
+allow netd tkcore:fd { use };
+allow netd tkcore:tcp_socket { read write setopt getopt getattr};
+allow tkcore node:udp_socket { node_bind };
+allow tkcore dnsproxyd_socket:sock_file { read write };
+
+allow tkcore mnt_user_file:lnk_file { read };
+allow tkcore mnt_user_file:dir { search };
+allow tkcore tmpfs:dir { search };
+allow tkcore shell_exec:file { execute read open execute_no_trans getattr };
+allow tkcore toolbox_exec:file { getattr execute read open execute_no_trans };
+allow tkcore proc:file { open read write };
+allow tkcore storage_file:lnk_file { read };
+allow tkcore fuse:dir { search setattr getattr };
+allow tkcore system_file:file { execute_no_trans };
+
+# for SDRPMB
+allow tkcore tkcore_block_device:blk_file rw_file_perms;
+allow tkcore block_device:dir search;
+
+recovery_only(`
+  allow recovery tkcore_systa_dir:file execute_no_trans;
+  allow recovery tkcore_systa_dir:file { create_file_perms relabelfrom relabelto };
+  allow recovery tkcore_systa_dir:dir { create_dir_perms relabelfrom relabelto };
+')

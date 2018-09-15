@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EccTable>
+    <!--
+        The attribute definition for tag EccEntry:
+        - Ecc: the emergnecy number
+        - Category: the service category (From 3GPP TS24.008)
+            - Bit 1 (1): Police
+            - Bit 2 (2): Ambulance
+            - Bit 3 (4): Fire Brigade
+            - Bit 4 (8): Marine Guard
+            - Bit 5 (16): Mountain Rescue
+            - Bit 6 (32): Manually initiated eCall
+            - Bit 7 (64): Automatically initiated eCall
+            - Bit 8 (128): is spare and set to "0"
+        - Condition: there are following values:
+            - 0: ecc only when no sim
+            - 1: ecc always
+            - 2: MMI will show ecc but send to nw as normal call
+        - Plmn: ecc for specific operator
+                format: xxx xx (for specific mnc) or xxx FFF (for all mnc under same mcc)
+
+        NOTICE: Please list operator specific emergency numbers before common emergency numbers
+                defined by 3GPP spec 22.101
+    -->
+
+    <!-- Add for China CTA -->
+    <EccEntry Ecc="110" Category="0" Condition="2" Plmn = "460 FFF" />
+    <EccEntry Ecc="119" Category="0" Condition="2" Plmn = "460 FFF" />
+    <EccEntry Ecc="120" Category="0" Condition="2" Plmn = "460 FFF" />
+    <EccEntry Ecc="122" Category="0" Condition="2" Plmn = "460 FFF" />
+    <!--#ifdef VENDOR_EDIT-->
+    <!--Yisheng.Wu@NW.CALL.1128114, 2017/10/19-->
+    <EccEntry Ecc="999" Category="0" Condition="2" Plmn = "525 05" />
+    <!--#endif VENDOR_EDIT-->
+    <!--#ifdef VENDOR_EDIT-->
+    <!--Yisheng.Wu@NW.CALL.1128114, 2017/11/20-->
+    <EccEntry Ecc="000" Category="0" Condition="1" Plmn = "505 FFF" />
+    <!--#endif VENDOR_EDIT-->
+
+    <!-- Add for Malaysis Digi operator -->
+    <EccEntry Ecc="999" Category="0" Condition="1" Plmn = "502 FFF" />
+
+    <!-- Add for Thailand TrueMove operator (520 00/04) -->
+    <EccEntry Ecc="112" Category="1" Condition="1" Plmn = "520 00" />
+    <EccEntry Ecc="191" Category="1" Condition="1" Plmn = "520 00" />
+    <EccEntry Ecc="911" Category="1" Condition="1" Plmn = "520 00" />
+    <EccEntry Ecc="199" Category="4" Condition="1" Plmn = "520 00" />
+    <EccEntry Ecc="1669" Category="2" Condition="1" Plmn = "520 00" />
+    <EccEntry Ecc="112" Category="1" Condition="1" Plmn = "520 04" />
+    <EccEntry Ecc="191" Category="1" Condition="1" Plmn = "520 04" />
+    <EccEntry Ecc="911" Category="1" Condition="1" Plmn = "520 04" />
+    <EccEntry Ecc="199" Category="4" Condition="1" Plmn = "520 04" />
+    <EccEntry Ecc="1669" Category="2" Condition="1" Plmn = "520 04" />
+
+    <!-- Add for Taiwan APTG operator (466 05) -->
+    <EccEntry Ecc="110" Category="1" Condition="1" Plmn = "466 05" />
+    <EccEntry Ecc="112" Category="4" Condition="1" Plmn = "466 05" />
+    <EccEntry Ecc="119" Category="2" Condition="1" Plmn = "466 05" />
+
+    <!-- 3GPP 22.101 -->
+    <EccEntry Ecc="112" Category="0" Condition="1" />
+    <EccEntry Ecc="911" Category="0" Condition="1" />
+    <EccEntry Ecc="000" Category="0" Condition="0" />
+    <EccEntry Ecc="08" Category="0" Condition="0" />
+    <EccEntry Ecc="110" Category="0" Condition="0" />
+    <EccEntry Ecc="118" Category="0" Condition="0" />
+    <EccEntry Ecc="119" Category="0" Condition="0" />
+    <EccEntry Ecc="999" Category="0" Condition="0" />
+<!--#ifdef VENDOR_EDIT
+    qianli.zhou@NW.Call.1050335, 2017-07-27, Modify for Emergency call -->
+    <EccEntry Ecc="000" Category="0" Condition="1"  Plmn = "460 FFF" />
+    <EccEntry Ecc="08" Category="0" Condition="1"  Plmn = "460 FFF" />
+    <EccEntry Ecc="118" Category="0" Condition="1"  Plmn = "460 FFF" />
+    <EccEntry Ecc="999" Category="0" Condition="1"  Plmn = "460 FFF" />
+<!--#endif VENDOR_EDIT-->
+</EccTable>

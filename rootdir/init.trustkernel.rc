@@ -1,0 +1,38 @@
+on post-fs
+	write /proc/bootprof "tkcore:configure SystemTA path"
+	chmod 0744 /system/app/t6
+	chown system system /system/app/t6
+	write /proc/bootprof "tkcore:configure SystemTA path END"
+
+on post-fs-data
+	write /proc/bootprof "tkcore:configure SPTA path"
+
+	mkdir /data/tee
+	mkdir /data/tee/t6
+	chmod 0766 /data/tee/t6
+
+	chown system system /data/tee
+	chown system system /data/tee/t6
+
+	restorecon /data/tee
+	restorecon /data/tee/t6
+
+	write /proc/bootprof "tkcore:configure SPTA path END"
+
+	write /proc/bootprof "tkcore:configure log path"
+
+	write /data/teec.log 0
+	chmod 0666 /data/teec.log
+	restorecon /data/teec.log
+
+	write /data/tee/tkcore.log 0
+	chown system system /data/tee/tkcore.log
+	restorecon /data/tee/tkcore.log
+
+	write /proc/bootprof "tkcore:configure log path END"
+
+service teed /system/vendor/bin/teed /dev/block/platform/bootdevice/by-name/sdrpmb
+	user system
+	group system inet
+	class core
+	seclabel u:r:tkcore:s0

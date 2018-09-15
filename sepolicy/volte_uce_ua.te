@@ -1,0 +1,27 @@
+# ==============================================
+# Policy File of /system/bin/volte_uce_ua Executable File
+
+# ==============================================
+# Type Declaration
+# ==============================================
+#type volte_uce_ua, domain, mtkimsapdomain;
+type volte_uce_ua_exec, exec_type, file_type;
+type volte_uce_socket, file_type;
+# ==============================================
+# MTK Policy Rule
+# ==============================================
+#permissive volte_uce_ua;
+#init_daemon_domain(volte_uce_ua)
+
+# Date : W16.17
+# Operation : feature patch back
+# Purpose : for presence ua connect to stack by local socket
+#allow volte_uce_ua socket_device:sock_file write;
+#allow volte_uce_ua node:udp_socket node_bind;
+#allow volte_uce_ua self:udp_socket { bind create };
+#allow volte_uce_ua self:udp_socket read;
+
+# Date : W16.17
+# Operation : feature patch back
+# Purpose : for presence ua connect to stack by local socket
+#allow volte_uce_ua volte_uce_socket:sock_file write;

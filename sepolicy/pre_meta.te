@@ -1,0 +1,27 @@
+# ==============================================
+# Policy File of /system/bin/pre_meta Executable File
+
+
+# ==============================================
+# Type Declaration
+# ==============================================
+
+type pre_meta_exec , exec_type, file_type;
+type pre_meta ,domain, domain_deprecated;
+
+
+# ==============================================
+# MTK Policy Rule
+# ==============================================
+
+init_daemon_domain(pre_meta)
+
+# Date : WK16.15
+# Operation : For reboot target to meta mode
+# Purpose : for pre_meta daemon to access lk_env and reboot target
+allow pre_meta block_device:dir search;
+allow pre_meta proc_lk_env:file rw_file_perms;
+allow pre_meta property_socket:sock_file write;
+allow pre_meta init:unix_stream_socket connectto;
+allow pre_meta para_block_device:blk_file rw_file_perms;set_prop(meta_tst, powerctl_prop);
+allow pre_meta powerctl_prop:property_service set;

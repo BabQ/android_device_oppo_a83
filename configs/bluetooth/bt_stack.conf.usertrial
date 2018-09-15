@@ -1,0 +1,109 @@
+# Enable BtSnoop logging function
+# valid value : true, false
+BtSnoopLogOutput=true
+
+# BtSnoop log output file
+BtSnoopFileName=/sdcard/mtklog/btlog/btsnoop_hci.log
+
+# Preserve existing BtSnoop log before overwriting
+BtSnoopSaveLog=true
+
+# Enable trace level reconfiguration function
+# Must be present before any TRC_ trace level settings
+TraceConf=true
+
+# Trace level configuration
+#   BT_TRACE_LEVEL_NONE    0    ( No trace messages to be generated )
+#   BT_TRACE_LEVEL_ERROR   1    ( Error condition trace messages )
+#   BT_TRACE_LEVEL_WARNING 2    ( Warning condition trace messages )
+#   BT_TRACE_LEVEL_API     3    ( API traces )
+#   BT_TRACE_LEVEL_EVENT   4    ( Debug messages for events )
+#   BT_TRACE_LEVEL_DEBUG   5    ( Full debug messages )
+#   BT_TRACE_LEVEL_VERBOSE 6    ( Verbose messages ) - Currently supported for TRC_BTAPP only.
+TRC_BTM=6
+TRC_HCI=6
+TRC_L2CAP=4
+TRC_RFCOMM=6
+TRC_OBEX=6
+TRC_AVCT=6
+TRC_AVDT=6
+TRC_AVRC=6
+TRC_AVDT_SCB=6
+TRC_AVDT_CCB=6
+TRC_A2D=6
+TRC_SDP=6
+TRC_GATT=6
+TRC_SMP=6
+TRC_BTAPP=6
+TRC_BTIF=6
+TRC_GAP=6
+TRC_BNEP=6
+TRC_PAN=6
+
+###################################
+#                                 #
+#  Must enable MTK_STACK_CONFIG   #
+#                                 #
+###################################
+
+# max file count of btsnoop_hci.log file
+# if the btsnoop file exceeds the max count, the oldest log file will be override
+BtSnoopMaxCount=5
+
+#
+# Control FW Log
+#
+[MtkBtFWLog]
+# valid value: force_disable, force_enable, fw_control
+# if force_disable,
+#    Host wouldn't send C1/C2 to controller to open FW log and do nothing;
+# if force_enable,
+#    1. Host would send HCI command(0xFC5D) to controller just to get chip info
+#       and ignore whether controller set fw log enable bit.
+#    2. Then host would send C1/C2 to controller to open FW log and start host
+#       fw logger.
+# if fw_control,
+#    1. Host would send HCI command(0xFC5D) to controller to get chip info and
+#       controller fw log enable bit and fw log feature masks.
+#    2. Check fw log enable bit got from controller,
+#       if controller set fw log enable yes, host would send C1 to controller to
+#       open FW log; otherwise host would not start firmware logger.
+#    3. Then check fw log feature mask
+#       If fw says it wants host to send C2 fw log config to override controller's
+#       setting, host will send C2 to controller;
+#
+# The default setting is:
+#  a) "force_disable" defined in bt_stack.conf for user load ;
+#  b) "fw_control" defined in bt_stack.conf.sqc for user-debug/eng load;
+#  c) "force_enable" defined in bt_stack.conf.debug, and it needs user or tester to
+#     manually change bluetooth's log setting to it.
+MtkBtFWLogOpen = fw_control
+
+# FCBE switch
+# Ex. Disable FWlog to set C1 = 01 BE FC 01 00 / Enable FWlog to set C1 = 01 BE FC 01 05
+C1      = 01 BE FC 01 05
+# FC5F filter
+C2      = 01 5F FC 2A 50 01 09 00 00 00
+# FC5F group filter bitmap
+# SYS
+C201    = 00 00 00 88
+# TIM
+C202    = 00 00 00 00
+# PKV
+C203    = 00 00 00 00
+# LC
+C204    = 00 00 00 00
+# LL
+C205    = 00 00 00 00
+# ANT
+C206    = 00 00 00 00
+# LMP
+C207    = 00 00 00 00
+# CO
+C208    = 00 00 00 00
+# VOICE
+C209    = 00 00 00 00
+
+[MtkBtHciDump]
+# enable print hci command/event data to device's main log
+MtkBtHciDump_enable=false

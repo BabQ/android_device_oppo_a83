@@ -1,0 +1,13 @@
+# ==============================================
+# MTK Policy Rule
+# ==============================================
+
+# System Server Services
+
+# Other Services
+type nvram_agent_service, service_manager_type;
+type mtk_codec_service_service, service_manager_type;
+# Vanzo:zhengyulong on: Fri, 14 Oct 2016 16:19:02 +0800
+# add for sunwave_fingerprinter
+type fpserver_service,          service_manager_type;
+# End of Vanzo: zhengyulong

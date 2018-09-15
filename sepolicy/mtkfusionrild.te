@@ -1,0 +1,124 @@
+# ==============================================
+# Policy File of /system/bin/mtkfusionrild Executable File
+
+# ==============================================
+# Type Declaration
+# ==============================================
+type mtkfusionrild_exec , exec_type, file_type;
+type mtkfusionrild ,domain, domain_deprecated;
+
+# ==============================================
+# MTK Policy Rule
+# ==============================================
+init_daemon_domain(mtkfusionrild)
+net_domain(mtkfusionrild)
+
+# Trigger module auto-load.
+allow mtkfusionrild kernel:system module_request;
+
+# Capabilities assigned for mtkfusionrild
+allow mtkfusionrild self:capability { setuid net_admin net_raw };
+allow mtkfusionrild self:capability dac_override;
+
+# Control cgroups
+allow mtkfusionrild cgroup:dir create_dir_perms;
+
+# Allow rx permission to shell executables
+allow mtkfusionrild shell_exec:file rx_file_perms;
+
+# Property service
+# allow set RIL related properties (radio./net./system./etc)
+set_prop(mtkfusionrild, radio_prop)
+set_prop(mtkfusionrild, net_radio_prop)
+set_prop(mtkfusionrild, system_radio_prop)
+set_prop(mtkfusionrild, persist_ril_prop)
+auditallow mtkfusionrild net_radio_prop:property_service set;
+auditallow mtkfusionrild system_radio_prop:property_service set;
+set_prop(mtkfusionrild, ril_active_md_prop)
+# allow set muxreport control properties
+set_prop(mtkfusionrild, ril_cdma_report_prop)
+set_prop(mtkfusionrild, ril_mux_report_case_prop)
+set_prop(mtkfusionrild, ctl_muxreport-daemon_prop)
+
+# Access to wake locks
+wakelock_use(mtkfusionrild)
+
+# Allow access permission to efs files
+allow mtkfusionrild efs_file:dir create_dir_perms;
+allow mtkfusionrild efs_file:file create_file_perms;
+allow mtkfusionrild bluetooth_efs_file:file r_file_perms;
+allow mtkfusionrild bluetooth_efs_file:dir r_dir_perms;
+
+# Allow access permission to dir/files
+# (radio data/system data/proc/etc)
+allow mtkfusionrild radio_data_file:dir rw_dir_perms;
+allow mtkfusionrild radio_data_file:file create_file_perms;
+allow mtkfusionrild sdcard_type:dir r_dir_perms;
+allow mtkfusionrild system_data_file:dir r_dir_perms;
+allow mtkfusionrild system_data_file:file r_file_perms;
+allow mtkfusionrild system_file:file x_file_perms;
+allow mtkfusionrild proc:file rw_file_perms;
+allow mtkfusionrild proc_net:file w_file_perms;
+
+# Allow mtkfusionrild to create and use netlink sockets.
+allow mtkfusionrild self:netlink_socket create_socket_perms;
+allow mtkfusionrild self:netlink_kobject_uevent_socket create_socket_perms;
+# Set and get routes directly via netlink.
+allow mtkfusionrild self:netlink_route_socket nlmsg_write;
+
+# Allow mtkfusionrild to create sockets.
+allow mtkfusionrild self:socket create_socket_perms;
+
+# Allow read/write to devices/files
+allow mtkfusionrild alarm_device:chr_file rw_file_perms;
+allow mtkfusionrild radio_device:chr_file rw_file_perms;
+allow mtkfusionrild radio_device:blk_file r_file_perms;
+allow mtkfusionrild mtd_device:dir search;
+# Allow read/write to uart driver (for GPS)
+allow mtkfusionrild gps_device:chr_file rw_file_perms;
+# Allow read/write to tty devices
+allow mtkfusionrild tty_device:chr_file rw_file_perms;
+allow mtkfusionrild eemcs_device:chr_file { rw_file_perms };
+
+allow mtkfusionrild Vcodec_device:chr_file { rw_file_perms };
+allow mtkfusionrild devmap_device:chr_file { r_file_perms };
+allow mtkfusionrild devpts:chr_file { rw_file_perms };
+allow mtkfusionrild ccci_device:chr_file { rw_file_perms };
+allow mtkfusionrild misc_device:chr_file { rw_file_perms };
+allow mtkfusionrild proc_lk_env:file rw_file_perms;
+allow mtkfusionrild sysfs_vcorefs_pwrctrl:file { w_file_perms };
+allow mtkfusionrild radio_tmpfs:file { w_file_perms };
+allow mtkfusionrild bootdevice_block_device:blk_file { rw_file_perms };
+allow mtkfusionrild para_block_device:blk_file { rw_file_perms };
+
+# Allow dir search, fd uses
+allow mtkfusionrild block_device:dir search;
+#allow mtkfusionrild platformblk_device:dir search;
+allow mtkfusionrild platform_app:fd use;
+allow mtkfusionrild radio:fd use;
+
+# For emulator
+allow mtkfusionrild qemu_pipe_device:chr_file rw_file_perms;
+allow mtkfusionrild socket_device:sock_file { w_file_perms };
+
+# For MAL MFI
+allow mtkfusionrild mal_mfi_socket:sock_file { w_file_perms };
+
+# For ccci sysfs node
+allow mtkfusionrild sysfs_ccci:dir search;
+allow mtkfusionrild sysfs_ccci:file r_file_perms;
+
+allow init socket_device:sock_file { create unlink setattr };
+
+# For AGPSD
+allow mtkfusionrild mtk_agpsd:unix_stream_socket connectto;
+
+#Dat: 2017/03/27
+#Purpose: allow set telephony Sensitive property
+set_prop(mtkfusionrild, mtk_telephony_sensitive_prop)
+
+# For debug socket
+allow mtkfusionrild debuggerd_socket:unix_stream_socket connectto;
+
+# For RIL VT to use socket
+#allow mtkfusionrild cdma_prop:property_service set;

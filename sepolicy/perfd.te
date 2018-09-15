@@ -1,0 +1,90 @@
+# ==============================================================================
+# Policy File of /system/bin/perfd Executable File
+# ==============================================================================
+
+# ==============================================================================
+# Type Declaration
+# ==============================================================================
+type perfd, domain;
+type perfd_exec, exec_type, file_type;
+
+# ==============================================================================
+# MTK Policy Rule
+# ==============================================================================
+# Date      : WK15.33
+# Operation : New Daemon
+# Purpose   : Start perfd. perfd is a daemon to recieve events to
+#             dynamically change of 1) vsync-offset 2) FPS
+#             though binder to surfaceflinger
+
+init_daemon_domain(perfd)
+
+allow perfd self:tcp_socket create;
+allow perfd           servicemanager:binder call;
+allow perfd           surfaceflinger_service:service_manager find;
+#allow perfd           debugfs_ged:file {getattr read write ioctl open};
+allow perfd           debugfs_ged:dir rw_dir_perms;
+allow perfd           debugfs_ged:file rw_file_perms;
+
+allow perfd           surfaceflinger:binder call;
+
+binder_use(init)
+binder_use(perfd)
+
+# For property service and uevent
+allow perfd           self:netlink_kobject_uevent_socket { bind create setopt read};
+allow perfd           property_socket:sock_file write;
+allow perfd           init:unix_stream_socket connectto;
+allow init socket_device:sock_file write;
+
+# Perfservice
+#allow perfd           mtk_perf_service:service_manager find;
+allow perfd           system_server:binder call;
+
+# ==============================================================================
+# GAS service section
+# ==============================================================================
+# Date      : WK16.06
+# Operation : Migration
+# Purpose   : Start GAS service. GAS service is a daemon to receive scene
+#             knowledge from providers, to determinate if current system running
+#             within the "Game mode".
+#
+
+# Claiming binder service
+binder_use(perfd)
+binder_service(perfd)
+binder_call(perfd, system_server)
+#allow perfd           gas_srv_service:service_manager     add;
+
+# For /proc/[pid]/cmdline accessing
+typeattribute           perfd                             mlstrustedsubject;
+allow perfd           proc:dir                            {search getattr};
+allow perfd           proc:file                           {getattr open read write ioctl};
+allow perfd           shell:dir                           search;
+allow perfd           platform_app:dir                    search;
+allow perfd           platform_app:file                   {open read getattr};
+allow perfd           priv_app:dir                        search;
+allow perfd           priv_app:file                       {open read getattr};
+allow perfd           system_app:dir                      search;
+allow perfd           system_app:file                     {open read getattr};
+allow perfd           untrusted_app:dir                   search;
+allow perfd           untrusted_app:file                  {open read getattr};
+allow perfd           mediaserver:dir                     search;
+allow perfd           mediaserver:file                    {open read getattr};
+
+# for ged_query_info(): ioctl at /proc/ged
+allow perfd           proc_ged:file                       {open read write ioctl};
+
+# for accessing /sys, i.e.:
+# 	1) /sys/class/BOOT/BOOT/boot/boot_mode of PerfServ
+#
+allow perfd           sysfs:file                          {read write open};
+
+# Binder interaction
+#allow perfd             mtk_perf_service:service_manager    find;
+#allow surfaceflinger    gas_srv_service:service_manager     find;
+#allow platform_app      gas_srv_service:service_manager     find;
+#allow priv_app          gas_srv_service:service_manager     find;
+#allow system_app        gas_srv_service:service_manager     find;
+#allow untrusted_app     gas_srv_service:service_manager     find;

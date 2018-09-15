@@ -1,0 +1,62 @@
+# ==============================================
+# MTK Policy Rule
+# ==============================================
+
+typeattribute system_app mlstrustedsubject;
+
+# Date : 2014/07/31
+# Stage: BaseUT
+# Purpose :[CdsInfo][CdsInfo uses net shell commands to get network information and write WI-FI MAC address by NVRAM]
+# Package Name: com.mediatek.connectivity
+allow system_app nvram_agent_binder:binder call;
+
+# Date : 2016/07/01
+# Purpose : Gain permission to system apps to create folder
+allow system_app media_rw_data_file:dir create;
+
+# Date : 2016/07/07
+# Purpose : Gain permission to system apps to append file for tool testing
+userdebug_or_eng
+allow system_app media_rw_data_file:file append;
+
+# Date : 2016/07/12
+# Purpose : Issue submitter need creat folder on SD card
+allow system_app vfat:dir create;
+# blestech add start
+allow system_app bl229x_device:chr_file rw_file_perms;
+allow system_app input_device:dir search;
+allow system_app fingerprint_prop:property_service set;
+# blestech add end
+
+# Date : 2016/08/27
+# Purpose : Gain permission to system apps read sdcard file for auto sanity case.
+allow system_app media_rw_data_file:dir { read open };
+allow system_app media_rw_data_file:file { read open };
+
+# Date : 2017/02/07
+# Operation : Migration
+# Purpose :  LPPe Service can update the event to AGPSD
+#allow system_app mtk_agpsd:unix_dgram_socket sendto;
+
+#Dat: 2017/02/14
+#Purpose: allow set telephony Sensitive property
+set_prop(system_app, mtk_telephony_sensitive_prop)
+
+# Date : 2017/08/22
+# Purpose : Allow dialer to set persist.meta.connecttype for ATM
+set_prop(system_app,meta_connecttype_prop);
+
+# Date : 2017/08/22
+# Purpose : Allow dialer to set persist.atm.mdmode for ATM
+set_prop(system_app,atm_mdmode_prop);
+
+allow system_app sysfs_brightness:file {open getattr read write create};
+
+# Date : 2017/09/13
+# Purpose : Allow dialer to set persist.atm.ipaddress for ATM
+set_prop(system_app,atm_ipaddr_prop);
+# add by qingzhan smartpa tfa9890 sepolicy
+allow system_app smartpa1_device:chr_file { read write ioctl open };
+#end
+# start: add sunwave
+# Date: 2017/07/11

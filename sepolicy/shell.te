@@ -1,0 +1,8 @@
+# ==============================================
+# MTK Policy Rule
+# ============
+
+# Date : WK16.46
+# Purpose : allow shell to switch aee mode
+allow shell debuggerd_socket:unix_stream_socket connectto;
+allow shell stp_dump3_exec:file rx_file_perms;

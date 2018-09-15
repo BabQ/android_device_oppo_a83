@@ -1,0 +1,72 @@
+# ==============================================
+# Policy File of /system/bin/fuelgauged_static Executable File 
+
+# ==============================================
+# Type Declaration
+# ==============================================
+type fuelgauged_static ,domain, domain_deprecated;
+type fuelgauged_static_exec , exec_type, file_type;
+type fuelgauged_static_file, file_type, data_file_type;
+
+# ==============================================
+# Android Policy Rule
+# ==============================================
+
+# ==============================================
+# NSA Policy Rule
+# ==============================================
+
+# ==============================================
+# MTK Policy Rule
+# ==============================================
+
+init_daemon_domain(fuelgauged_static)
+
+# Data : WK14.43
+# Operation : Migration
+# Purpose : Fuel Gauge daemon for access driver node
+allow fuelgauged_static input_device:dir rw_dir_perms;
+allow fuelgauged_static input_device:file r_file_perms;
+
+# Data : WK14.43
+# Operation : Migration
+# Purpose : For meta tool calibration
+allow fuelgauged_static mtk-adc-cali_device:chr_file rw_file_perms;
+
+# Data : WK14.43
+# Operation : Migration
+# Purpose : For fg.log can be printed with kernel log
+allow fuelgauged_static kmsg_device:chr_file w_file_perms;
+
+# Data : WK14.43
+# Operation : Migration
+# Purpose : For fg daemon can comminucate with kernel
+allow fuelgauged_static fuelgauged_static:netlink_kobject_uevent_socket create_socket_perms;
+allow fuelgauged_static fuelgauged_static:netlink_socket create_socket_perms;
+# Data : WK16.21
+# Operation : New Feature
+# Purpose : For fg daemon can access /data/FG folder
+file_type_auto_trans(fuelgauged_static, system_data_file, fuelgauged_static_file);
+allow fuelgauged_static fuelgauged_static_file:file rw_file_perms;
+allow fuelgauged_static system_data_file:dir rw_dir_perms;
+
+# Data : WK16.21
+# Operation : New Feature
+# Purpose : For fg daemon can do nvram r/w to save car_tune_value
+allow fuelgauged_static nvdata_file:dir rw_dir_perms;
+allow fuelgauged_static nvdata_file:file {rw_file_perms create_file_perms};
+allow fuelgauged_static nvram_data_file:lnk_file rw_file_perms;
+
+# Data : WK16.25
+# Operation : Migration
+# Purpose : For fg daemon can work in recovery mode
+allow fuelgauged_static rootfs:file entrypoint;
+
+# Data : WK16.39
+allow fuelgauged_static self:capability { chown fsetid dac_override };
+
+# Data : W16.43
+# Operation : New Feature
+# Purpose : Change from /data to /cache
+allow fuelgauged_static cache_file:file {rw_file_perms create_file_perms};
+allow fuelgauged_static cache_file:dir {rw_dir_perms create_dir_perms};

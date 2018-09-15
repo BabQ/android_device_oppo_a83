@@ -1,0 +1,33 @@
+# ==============================================
+# Policy File of /system/bin/qmcX983d Executable File 
+
+
+# ==============================================
+# Type Declaration
+# ==============================================
+
+type qmcX983d_exec , exec_type, file_type;
+type qmcX983d ,domain,domain_deprecated;
+
+# ==============================================
+# MTK Policy Rule
+# ==============================================
+
+
+init_daemon_domain(qmcX983d)
+# Data : WK14.43
+# Operation : Migration
+# Purpose : M-sensor daemon for access driver node
+#hongfan@wind-mobi.com 20170116 start 
+# Purpose : M-sensor daemon for access M-sensor driver node
+allow qmcX983d msensor_device:chr_file rw_file_perms;
+allow qmcX983d gsensor_device:chr_file rw_file_perms;
+allow qmcX983d input_device:dir rw_dir_perms;
+allow qmcX983d input_device:file r_file_perms;
+
+
+# Operate data partation directly, need modify later,e.g. use "data/misc/sensor".
+# for msensor daemon access "data/misc".
+file_type_auto_trans(qmcX983d, system_data_file, msensor_data_file)
+allow qmcX983d system_data_file:dir create_dir_perms;
+allow qmcX983d msensor_data_file:file create_file_perms;
